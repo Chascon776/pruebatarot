@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { mazoCompleto } from './utils/mazoCompleto';
+import { mazoCompleto } from './utils/MazoCompleto';
 import { obtenerTirada, type CartaTirada } from './utils/tarotEngine';
 
 interface CartaInteractiva extends CartaTirada {
