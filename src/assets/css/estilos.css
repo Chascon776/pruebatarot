@@ -1,0 +1,812 @@
+/* src/assets/estilo.css */
+
+.app-container {
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+  color: #f3f0f7;
+  background-color: #0f0c1b;
+  min-height: 100vh;
+}
+
+h1 {
+  color: #ffd700;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #b3a9db;
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+}
+
+.btn-tirada {
+  background-color: #673ab7;
+  color: white;
+  border: 2px solid #ffd700;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(103, 58, 183, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btn-tirada:hover {
+  background-color: #512da8;
+  transform: scale(1.05);
+}
+
+.tablero-cartas {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+/* ========================================================
+   🔮 ESTILOS DE CONTENEDORES Y EFECTO FLIP 3D EN CARTAS
+   ======================================================== */
+
+/* CONTENEDOR ANFITRIÓN DEL ESPACIO 3D */
+.carta-container {
+  width: 230px !important;    
+  height: 360px !important;   
+  perspective: 1000px !important; 
+  cursor: pointer !important;
+  display: inline-block !important;
+  margin: 10px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important; 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Caja interna reactiva que realiza la rotación física */
+.carta-card {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  transform-style: preserve-3d !important;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3) !important;
+  border-radius: 12px !important;
+}
+
+.carta-container:hover .carta-card {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(103, 58, 183, 0.3);
+}
+
+/* Disparador de rotación de Vue */
+.carta-card.rotada-3d {
+  transform: rotateY(180deg) !important;
+}
+
+/* Oculta la cara trasera/frontal opuesta durante el giro */
+.carta-front, .carta-back {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  backface-visibility: hidden !important;
+  border: 2px solid #673ab7 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Si la carta es invertida o tiene vista de arte cambiamos el anillo */
+.carta-card.rotada-3d.vista-arte .carta-front {
+  border-color: #ffd700 !important;
+}
+.carta-card.rotada-3d.es-invertida .carta-front {
+  border-color: #d32f2f !important;
+}
+
+/* ESTILO DEL DORSO (BOCA ABAJO) */
+.carta-back {
+  background: #150f2e !important;
+  background-image: radial-gradient(circle, #241849 0%, #0f0a24 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2 !important;
+  transform: rotateY(0deg) !important;
+}
+
+.simbolo-dorso {
+  font-size: 3rem;
+  text-shadow: 0 0 15px #c5a880;
+  animation: pulsoDorso 2s infinite ease-in-out;
+}
+
+/* ESTILO DEL FRENTE (REVELADA) */
+.carta-front {
+  transform: rotateY(180deg) !important; 
+  background-size: 100% 100% !important;       
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+}
+
+/* 🌟 CORRECCIÓN: Si la carta es invertida, rotamos el contenedor frontal entero... */
+.carta-card.rotada-3d.es-invertida .carta-front {
+  transform: rotateY(180deg) rotate(180deg) !important;
+}
+
+/* 🌟 ...Y CONTRA-ROTAMOS los elementos de texto y el ojo indicador para enderezarlos */
+.carta-card.rotada-3d.es-invertida .capa-oscura,
+.carta-card.rotada-3d.es-invertida .ojo-indicador {
+  transform: rotate(180deg) !important; 
+}
+
+/* ========================================================
+   ELEMENTOS INTERNOS DE LOS ARCANOS
+   ======================================================== */
+
+.marca-agua {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Capa oscura estable */
+.capa-oscura {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 12, 27, 0.84);
+  padding: 30px 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.capa-oscura.ocultar {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.visual-card {
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+}
+
+.capa-oscura h3 {
+  margin: 10px 0 5px 0;
+  font-size: 1.25rem;
+  color: #ffffff;
+}
+
+.tipo {
+  font-size: 0.8rem;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: auto;
+}
+
+.btn-leer-mas {
+  background: rgba(103, 58, 183, 0.3);
+  border: 1px solid #673ab7;
+  color: #e0dbf1;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.carta-container:hover .btn-leer-mas {
+  background: #673ab7;
+  color: #ffffff;
+  border-color: #ffd700;
+}
+
+/* OJO INDICADOR */
+.ojo-indicador {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(15, 12, 27, 0.9);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  z-index: 3;
+  transition: all 0.2s ease;
+}
+
+.ojo-indicador:hover {
+  background: #673ab7;
+  transform: scale(1.1);
+}
+
+/* ========================================================
+   🔮 ESTILOS DEL MODAL MÍSTICO
+   ======================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(7, 5, 15, 0.92);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #130f26;
+  border: 2px solid #673ab7;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 650px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(103, 58, 183, 0.4);
+  overflow: hidden;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-content.modal-invertida {
+  border-color: #d32f2f;
+  box-shadow: 0 0 30px rgba(211, 47, 47, 0.3);
+}
+
+.btn-cerrar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: #b3a9db;
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+}
+.btn-cerrar:hover {
+  background: #d32f2f;
+  color: white;
+}
+
+.modal-body {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.modal-tarjeta-visual {
+  width: 220px;
+  height: 340px;
+  background-size: 100% 100% !important; 
+  background-position: center;
+  position: relative;
+}
+.modal-content.modal-invertida .modal-tarjeta-visual {
+  transform: rotate(180deg); 
+}
+
+.marca-agua-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  color: rgba(255,255,255,0.12);
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 1.1rem;
+}
+
+.modal-info {
+  flex: 1;
+  min-width: 280px;
+  padding: 30px 25px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal-content.modal-invertida .modal-info {
+  transform: none !important;
+}
+
+.modal-info h2 {
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  font-size: 1.6rem;
+}
+.modal-content.modal-invertida h2 {
+  color: #ff8a80;
+}
+
+.modal-tipo {
+  color: #ffd700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.divisor-mistico {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, #673ab7, transparent);
+  margin: 15px 0;
+}
+
+.modal-significado-box h3 {
+  color: #b3a9db;
+  font-size: 1rem;
+  margin: 0 0 8px 0;
+}
+
+.modal-texto-revelacion {
+  color: #e0dbf1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid #673ab7;
+}
+.modal-content.modal-invertida .modal-texto-revelacion {
+  border-left-color: #d32f2f;
+}
+
+/* ========================================================
+   🎮 PESTAÑAS, BIENVENIDA Y COMPONENTES ADICIONALES
+   ======================================================== */
+.welcome-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  padding: 15px;
+}
+
+.welcome-card {
+  background: #130f26;
+  border: 2px solid #673ab7;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 460px;
+  padding: 30px 25px;
+  box-shadow: 0 0 25px rgba(103, 58, 183, 0.35);
+  box-sizing: border-box;
+  animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.oracle-avatar {
+  font-size: 2.8rem;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 8px #673ab7);
+}
+
+.welcome-subtitle {
+  color: #b3a9db;
+  font-size: 0.9rem;
+  margin: 5px 0 20px 0;
+}
+
+.auth-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #312152;
+}
+
+.auth-tabs button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #b3a9db;
+  padding: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.auth-tabs button.active {
+  background: #673ab7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(103, 58, 183, 0.4);
+}
+
+.formulario-astral {
+  text-align: left;
+}
+
+.divisor-formulario {
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin: 25px 0 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.divisor-formulario::before,
+.divisor-formulario::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #4a337e, transparent);
+}
+
+.input-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  color: #a499d4;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid #4a337e;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-group input:focus {
+  border-color: #ffd700;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+.input-row .input-group {
+  flex: 1;
+}
+
+.btn-ingresar {
+  background: linear-gradient(135deg, #673ab7, #512da8);
+  color: white;
+  border: 2px solid #ffd700;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  box-shadow: 0 4px 12px rgba(103, 58, 183, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-ingresar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(103, 58, 183, 0.5);
+}
+
+.user-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(19, 15, 38, 0.85);
+  border: 1px solid #4a337e;
+  padding: 8px 18px;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto 25px auto;
+  font-size: 0.88rem;
+  color: #e0dbf1;
+  box-sizing: border-box;
+}
+
+.monedas-badge {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: #ff8a80;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+.btn-logout:hover {
+  color: #ff5252;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.energia-container {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid #00e5ff;
+  padding: 4px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  gap: 5px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.energia-container:hover {
+  background: rgba(0, 229, 255, 0.15);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+  transform: scale(1.03);
+}
+
+.energia-icono {
+  animation: pulsoFuego 1.5s infinite alternate;
+}
+
+.energia-puntos {
+  color: #00e5ff;
+  font-weight: bold;
+}
+
+.energia-reloj {
+  color: #b3a9db;
+  font-size: 0.75rem;
+  border-left: 1px solid #312152;
+  padding-left: 5px;
+}
+
+.btn-tirada.sin-energia {
+  background-color: #2c2541 !important;
+  color: #6a5f8a !important;
+  border-color: #4a337e !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+@keyframes pulsoFuego {
+  from { filter: drop-shadow(0 0 2px #00e5ff); }
+  to { filter: drop-shadow(0 0 8px #00e5ff); transform: scale(1.1); }
+}
+
+.navigation-menu {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 550px;
+  margin: 0 auto 25px auto;
+  padding: 0 10px;
+}
+
+.navigation-menu button {
+  flex: 1;
+  background: #191436;
+  border: 1px solid #4a337e;
+  color: #b3a9db;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navigation-menu button:hover {
+  background: rgba(103, 58, 183, 0.15);
+  border-color: #673ab7;
+  color: #ffffff;
+}
+
+.navigation-menu button.active {
+  background: linear-gradient(135deg, #673ab7, #512da8);
+  color: #ffffff;
+  border-color: #ffd700;
+  box-shadow: 0 4px 12px rgba(103, 58, 183, 0.4);
+}
+
+.config-view {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.config-card {
+  background: #130f26;
+  border: 2px solid #4a337e;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.pk-badge {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px dashed #ffd700;
+  color: #ffd700;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.config-email-display {
+  color: #b3a9db;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.btn-save-profile {
+  background: linear-gradient(135deg, #4caf50, #2e7d32) !important;
+  border-color: #81c784 !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+}
+
+.user-identity {
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  color: #ffffff;
+  font-size: 1rem;
+  text-shadow: 0 0 8px rgba(162, 133, 219, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.support-id-badge {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  color: #ffffff;
+  opacity: 0.25; 
+  background: transparent;
+  padding: 0px 4px;
+  transition: all 0.25s ease;
+  cursor: help;
+  user-select: none;
+}
+
+.support-id-badge:hover {
+  opacity: 1; 
+  color: #ffd700;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+/* ========================================================
+   SELECTOR DE BARAJAS EN JUEGO
+   ======================================================== */
+.selector-barajas {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.selector-barajas button {
+  background: rgba(30, 20, 56, 0.4);
+  border: 1px solid #c5a880;
+  color: #c5a880;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.selector-barajas button.activo {
+  background: #c5a880;
+  color: #1e1438;
+  box-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulsoDorso {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* ==========================================================================
+   MASCOTA FLOTANTE: POSICIONAMIENTO EN PRIMERA FILA EN ABSOLUTO
+   ========================================================================== */
+
+.mascota-fija-pantalla {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 99999; 
+  pointer-events: none; 
+}
+
+.bubble-chat-flotante {
+  background: rgba(15, 12, 27, 0.95); 
+  border: 1px solid #ffd700;
+  color: #f3f0f7;
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 220px;
+  margin-bottom: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  pointer-events: auto; 
+}
+
+.mascota-wrapper {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto; 
+}

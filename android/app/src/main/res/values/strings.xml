@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">tarot-astral-app</string>
+    <string name="title_activity_main">tarot-astral-app</string>
+    <string name="package_name">com.tuempresa.tarotastral</string>
+    <string name="custom_url_scheme">com.tuempresa.tarotastral</string>
+</resources>
